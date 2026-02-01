@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #6c63ff;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #554fd8;
+    }
+
+    #weatherResult {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+
+    <input
+      type="text"
+      id="locationInput"
+      placeholder="Enter city name"
+    >
+
+    <br><br>
+
+    <button onclick="getWeather()">Get Temperature</button>
+
+    <div id="weatherResult"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const location = document.getElementById("locationInput").value.trim();
+      const result = document.getElementById("weatherResult");
+
+      if (location === "") {
+        result.innerHTML = "❌ Please enter a city name";
+        return;
+      }
+
+      const apiKey = "efa4d13b977c45cab0633812260102";
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+          result.innerHTML = "⚠️ City not found";
+          return;
+        }
+
+        result.innerHTML = `
+          <strong>${data.location.name}, ${data.location.country}</strong><br>
+          🌡 Temperature: ${data.current.temp_c} °C
+        `;
+      } catch (error) {
+        result.innerHTML = "❌ Error fetching data";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
